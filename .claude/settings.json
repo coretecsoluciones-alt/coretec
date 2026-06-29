@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/franciscosanchezkeenan/coretec/ && echo \"---\" && ls /Users/franciscosanchezkeenan/ | grep -i monte)",
+      "Read(//Users/franciscosanchezkeenan/**)"
+    ]
+  }
+}
