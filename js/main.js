@@ -269,6 +269,16 @@
 
     initSliders();
 
-    /* Videos use autoplay muted loop playsinline directly in HTML — no JS needed */
+    /* ── Video autoplay unlock for Chrome iOS (WKWebView restricts HTML autoplay) ──
+       On first user touch/scroll, call play() on every paused video.
+       Videos already have preload="auto" so data is buffered by then.        ── */
+    const allVideos = Array.from(document.querySelectorAll('video[autoplay]'));
+
+    function unlockVideos() {
+        allVideos.forEach(v => { if (v.paused) v.play().catch(() => {}); });
+    }
+
+    document.addEventListener('touchstart', unlockVideos, { once: true, passive: true });
+    document.addEventListener('scroll',     unlockVideos, { once: true, passive: true });
 
 })();
