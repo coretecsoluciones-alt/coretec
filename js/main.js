@@ -269,42 +269,43 @@
 
     initSliders();
 
+    /* ── Utility: load lazy video sources then play when ready ── */
+    function playLazyVideo(video) {
+        const sources = video.querySelectorAll('source[data-src]');
+        if (!sources.length) { video.play().catch(() => {}); return; }
+        sources.forEach(s => { s.src = s.dataset.src; s.removeAttribute('data-src'); });
+        video.load();
+        // Wait until the browser has buffered enough to play (critical on iOS)
+        video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
+        // Fallback: if canplay never fires (some Android WebViews), try after a short delay
+        setTimeout(() => { if (video.paused) video.play().catch(() => {}); }, 800);
+    }
+
     /* ── Apple Watch video: lazy load + autoplay on scroll ── */
     const watchVideo = document.querySelector('[data-watch-video]');
-    if (watchVideo && 'IntersectionObserver' in window) {
-        const videoIO = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Load sources from data-src on first intersection
-                    watchVideo.querySelectorAll('source[data-src]').forEach(s => {
-                        s.src = s.dataset.src;
-                        s.removeAttribute('data-src');
-                    });
-                    watchVideo.load();
-                    watchVideo.play().catch(() => {});
-                    videoIO.unobserve(watchVideo);
-                }
-            });
-        }, { threshold: 0.2 });
-        videoIO.observe(watchVideo);
+    if (watchVideo) {
+        if ('IntersectionObserver' in window) {
+            const videoIO = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        playLazyVideo(watchVideo);
+                        videoIO.unobserve(watchVideo);
+                    }
+                });
+            }, { threshold: 0.2 });
+            videoIO.observe(watchVideo);
+        } else {
+            playLazyVideo(watchVideo);
+        }
     }
 
     /* ── Generic lazy video loader (data-lazy-video) ── */
     document.querySelectorAll('[data-lazy-video]').forEach(video => {
-        const load = () => {
-            video.querySelectorAll('source[data-src]').forEach(s => {
-                s.src = s.dataset.src;
-                s.removeAttribute('data-src');
-            });
-            video.load();
-            video.play().catch(() => {});
-        };
-
-        if (!('IntersectionObserver' in window)) { load(); return; }
+        if (!('IntersectionObserver' in window)) { playLazyVideo(video); return; }
 
         const io = new IntersectionObserver(entries => {
             if (!entries[0].isIntersecting) return;
-            load();
+            playLazyVideo(video);
             io.unobserve(video);
         }, { threshold: 0.15 });
         io.observe(video);
