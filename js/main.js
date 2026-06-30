@@ -269,43 +269,6 @@
 
     initSliders();
 
-    /* ── Video autoplay: iOS Safari + Chrome iOS + Chrome Android ── */
-    function activateVideo(video) {
-        if (video._activated) return;
-        video._activated = true;
-
-        // Prefer MP4 (universal support). WebM may not load on Chrome iOS.
-        const lazySrc = video.querySelector('source[data-src][type="video/mp4"]')
-                     || video.querySelector('source[data-src]');
-        if (lazySrc) {
-            video.src = lazySrc.dataset.src;
-            lazySrc.removeAttribute('data-src');
-            video.muted   = true;   // explicit — some Chrome versions need this set via JS
-            video.preload = 'auto'; // lift preload="none" so Chrome starts buffering
-            video.load();
-        }
-
-        const tryPlay = () => video.play().catch(() => {});
-        tryPlay(); // works immediately on iOS Safari
-        video.addEventListener('loadeddata', tryPlay, { once: true }); // Chrome: retry when buffered
-    }
-
-    function watchAndPlay(video, threshold) {
-        if (!('IntersectionObserver' in window)) { activateVideo(video); return; }
-        const io = new IntersectionObserver(entries => {
-            if (!entries[0].isIntersecting) return;
-            activateVideo(video);
-            io.unobserve(video);
-        }, { threshold: threshold || 0 });
-        io.observe(video);
-    }
-
-    const iphoneHeroVideo = document.querySelector('.iphone-hero-video');
-    if (iphoneHeroVideo) watchAndPlay(iphoneHeroVideo, 0);
-
-    const watchVideo = document.querySelector('[data-watch-video]');
-    if (watchVideo) watchAndPlay(watchVideo, 0);
-
-    document.querySelectorAll('[data-lazy-video]').forEach(v => watchAndPlay(v, 0));
+    /* Videos use autoplay muted loop playsinline directly in HTML — no JS needed */
 
 })();
