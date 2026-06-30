@@ -269,46 +269,46 @@
 
     initSliders();
 
-    /* ── Utility: load lazy video sources then play when ready ── */
-    function playLazyVideo(video) {
-        const sources = video.querySelectorAll('source[data-src]');
-        if (!sources.length) { video.play().catch(() => {}); return; }
-        sources.forEach(s => { s.src = s.dataset.src; s.removeAttribute('data-src'); });
-        video.load();
-        // Wait until the browser has buffered enough to play (critical on iOS)
-        video.addEventListener('canplay', () => video.play().catch(() => {}), { once: true });
-        // Fallback: if canplay never fires (some Android WebViews), try after a short delay
-        setTimeout(() => { if (video.paused) video.play().catch(() => {}); }, 800);
-    }
+    /* ── Utility: activate a video when it enters the viewport ── */
+    function observeAndPlay(video, threshold) {
+        const activate = () => {
+            // Unlock lazy sources
+            video.querySelectorAll('source[data-src]').forEach(s => {
+                s.src = s.dataset.src;
+                s.removeAttribute('data-src');
+            });
+            // Tell the browser to start buffering (overrides preload="none")
+            video.preload = 'auto';
+            video.load();
+            // Play as soon as the browser has enough data — critical on iOS Safari
+            const tryPlay = () => video.play().catch(() => {});
+            if (video.readyState >= 3) {
+                tryPlay();
+            } else {
+                video.addEventListener('canplay', tryPlay, { once: true });
+                // Hard fallback for browsers that never fire canplay
+                setTimeout(tryPlay, 1200);
+            }
+        };
 
-    /* ── Apple Watch video: lazy load + autoplay on scroll ── */
-    const watchVideo = document.querySelector('[data-watch-video]');
-    if (watchVideo) {
-        if ('IntersectionObserver' in window) {
-            const videoIO = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        playLazyVideo(watchVideo);
-                        videoIO.unobserve(watchVideo);
-                    }
-                });
-            }, { threshold: 0.2 });
-            videoIO.observe(watchVideo);
-        } else {
-            playLazyVideo(watchVideo);
-        }
-    }
-
-    /* ── Generic lazy video loader (data-lazy-video) ── */
-    document.querySelectorAll('[data-lazy-video]').forEach(video => {
-        if (!('IntersectionObserver' in window)) { playLazyVideo(video); return; }
-
+        if (!('IntersectionObserver' in window)) { activate(); return; }
         const io = new IntersectionObserver(entries => {
             if (!entries[0].isIntersecting) return;
-            playLazyVideo(video);
+            activate();
             io.unobserve(video);
-        }, { threshold: 0.15 });
+        }, { threshold: threshold || 0.15 });
         io.observe(video);
-    });
+    }
+
+    /* ── iPhone hero video (CINCO COLORES) — already has src, force play on scroll ── */
+    const iphoneHeroVideo = document.querySelector('.iphone-hero-video');
+    if (iphoneHeroVideo) observeAndPlay(iphoneHeroVideo, 0.1);
+
+    /* ── Apple Watch video ── */
+    const watchVideo = document.querySelector('[data-watch-video]');
+    if (watchVideo) observeAndPlay(watchVideo, 0.2);
+
+    /* ── AirTag + Apple Pencil videos ── */
+    document.querySelectorAll('[data-lazy-video]').forEach(v => observeAndPlay(v, 0.15));
 
 })();
