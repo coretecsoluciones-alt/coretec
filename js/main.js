@@ -269,18 +269,28 @@
 
     initSliders();
 
-    /* ── Video autoplay: reliable on iOS Safari + all modern browsers ── */
+    /* ── Video autoplay: iOS Safari + Chrome Android + all modern browsers ── */
     function activateVideo(video) {
         if (video._activated) return;
         video._activated = true;
-        // Lazy videos: set src directly on <video> (more reliable than <source> on iOS)
+
         const lazySrc = video.querySelector('source[data-src]');
         if (lazySrc) {
+            // Set src directly on <video> element (most reliable across browsers)
             video.src = lazySrc.dataset.src;
             lazySrc.removeAttribute('data-src');
+            // Chrome Android needs explicit load() to begin buffering
+            video.load();
         }
-        // Muted videos can play without user gesture on iOS 10+ and all modern browsers
-        video.play().catch(() => {});
+
+        const tryPlay = () => video.play().catch(() => {});
+
+        // iOS Safari: play() works immediately on muted videos
+        tryPlay();
+
+        // Chrome Android: play() fails if called before data is buffered.
+        // loadeddata fires when the first frame is ready — retry then.
+        video.addEventListener('loadeddata', tryPlay, { once: true });
     }
 
     function watchAndPlay(video, threshold) {
@@ -293,7 +303,7 @@
         io.observe(video);
     }
 
-    // iPhone hero — has src already, observer triggers play() when visible
+    // iPhone hero — src already set in HTML, observer triggers play() when visible
     const iphoneHeroVideo = document.querySelector('.iphone-hero-video');
     if (iphoneHeroVideo) watchAndPlay(iphoneHeroVideo, 0.05);
 
