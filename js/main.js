@@ -269,28 +269,25 @@
 
     initSliders();
 
-    /* ── Video autoplay: iOS Safari + Chrome Android + all modern browsers ── */
+    /* ── Video autoplay: iOS Safari + Chrome iOS + Chrome Android ── */
     function activateVideo(video) {
         if (video._activated) return;
         video._activated = true;
 
-        const lazySrc = video.querySelector('source[data-src]');
+        // Prefer MP4 (universal support). WebM may not load on Chrome iOS.
+        const lazySrc = video.querySelector('source[data-src][type="video/mp4"]')
+                     || video.querySelector('source[data-src]');
         if (lazySrc) {
-            // Set src directly on <video> element (most reliable across browsers)
             video.src = lazySrc.dataset.src;
             lazySrc.removeAttribute('data-src');
-            // Chrome Android needs explicit load() to begin buffering
+            video.muted   = true;   // explicit — some Chrome versions need this set via JS
+            video.preload = 'auto'; // lift preload="none" so Chrome starts buffering
             video.load();
         }
 
         const tryPlay = () => video.play().catch(() => {});
-
-        // iOS Safari: play() works immediately on muted videos
-        tryPlay();
-
-        // Chrome Android: play() fails if called before data is buffered.
-        // loadeddata fires when the first frame is ready — retry then.
-        video.addEventListener('loadeddata', tryPlay, { once: true });
+        tryPlay(); // works immediately on iOS Safari
+        video.addEventListener('loadeddata', tryPlay, { once: true }); // Chrome: retry when buffered
     }
 
     function watchAndPlay(video, threshold) {
@@ -299,19 +296,16 @@
             if (!entries[0].isIntersecting) return;
             activateVideo(video);
             io.unobserve(video);
-        }, { threshold: threshold || 0.1 });
+        }, { threshold: threshold || 0 });
         io.observe(video);
     }
 
-    // iPhone hero — src already set in HTML, observer triggers play() when visible
     const iphoneHeroVideo = document.querySelector('.iphone-hero-video');
-    if (iphoneHeroVideo) watchAndPlay(iphoneHeroVideo, 0.05);
+    if (iphoneHeroVideo) watchAndPlay(iphoneHeroVideo, 0);
 
-    // Apple Watch (lazy src)
     const watchVideo = document.querySelector('[data-watch-video]');
-    if (watchVideo) watchAndPlay(watchVideo, 0.15);
+    if (watchVideo) watchAndPlay(watchVideo, 0);
 
-    // AirTag + Apple Pencil (lazy src)
-    document.querySelectorAll('[data-lazy-video]').forEach(v => watchAndPlay(v, 0.1));
+    document.querySelectorAll('[data-lazy-video]').forEach(v => watchAndPlay(v, 0));
 
 })();
