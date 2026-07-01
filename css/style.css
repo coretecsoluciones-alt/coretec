@@ -1753,7 +1753,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
     .trust-row { flex-direction: column; gap: 0; }
     .trust-divider { width: 80px; height: 1px; }
-    .trust-item { padding: 16px 24px; }
+    .trust-item { padding: 16px 24px; width: 100%; justify-content: center; }
 
     .footer-main { flex-direction: column; gap: 40px; }
     .footer-nav  { flex-wrap: wrap; gap: 32px; }
