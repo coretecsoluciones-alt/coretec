@@ -1740,11 +1740,12 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     .nav-links, .nav-actions { display: none; }
     .nav-toggle { display: flex; }
 
-    .hero-content { flex-direction: column; text-align: center; padding-bottom: 60px; }
+    .hero-content { flex-direction: column; text-align: center; padding-bottom: 112px; }
     .hero-ctas { justify-content: center; }
     .hero-visual { order: -1; }
     .device-phone { width: 160px; height: 328px; }
     .hero-device-glow { width: 200px; height: 200px; }
+    .hero-scroll-cue { color: rgba(255,255,255,0.55); bottom: 28px; }
 
     .grid-3 { grid-template-columns: 1fr 1fr; }
     .grid-4 { grid-template-columns: 1fr 1fr; }
