@@ -549,6 +549,73 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     opacity: 0.5;
 }
 
+/* Holo Ring — rotating aura behind the device */
+.holo-ring {
+    position: absolute;
+    width: 300px; height: 300px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+        transparent 0deg, rgba(77,143,255,0.55) 25deg, transparent 70deg,
+        transparent 180deg, rgba(126,176,255,0.4) 210deg, transparent 260deg, transparent 360deg);
+    filter: blur(2px);
+    animation: ringSpin 7s linear infinite;
+    -webkit-mask-image: radial-gradient(circle, transparent 58%, black 60%, black 63%, transparent 65%);
+    mask-image: radial-gradient(circle, transparent 58%, black 60%, black 63%, transparent 65%);
+    pointer-events: none;
+}
+@keyframes ringSpin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* AR-style recognition brackets around the device */
+.bracket {
+    position: absolute;
+    width: 26px; height: 26px;
+    z-index: 3;
+    opacity: 0;
+    animation: bracketPulse 3s ease-in-out infinite;
+    pointer-events: none;
+}
+.bracket::before, .bracket::after {
+    content: '';
+    position: absolute;
+    background: var(--blue-light);
+    box-shadow: 0 0 6px rgba(77,143,255,0.8);
+}
+.bracket-tl { top: 34px; left: -14px; animation-delay: 0s; }
+.bracket-tr { top: 34px; right: -14px; animation-delay: 0.15s; }
+.bracket-bl { bottom: 34px; left: -14px; animation-delay: 0.3s; }
+.bracket-br { bottom: 34px; right: -14px; animation-delay: 0.45s; }
+.bracket-tl::before, .bracket-tr::before, .bracket-bl::before, .bracket-br::before { width: 100%; height: 2px; top: 0; }
+.bracket-tl::after, .bracket-tr::after, .bracket-bl::after, .bracket-br::after { width: 2px; height: 100%; left: 0; }
+.bracket-bl::before, .bracket-br::before { top: auto; bottom: 0; }
+.bracket-tr::after, .bracket-br::after { left: auto; right: 0; }
+@keyframes bracketPulse {
+    0%, 100% { opacity: 0; transform: scale(0.85); }
+    15%, 35% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0; transform: scale(1.05); }
+}
+
+/* Diagonal glint sweeping across the screen glass */
+.device-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.12) 48%, transparent 56%);
+    background-size: 220% 220%;
+    animation: glint 4.5s ease-in-out infinite;
+}
+@keyframes glint {
+    0%, 100% { background-position: 120% 0%; }
+    50%      { background-position: -20% 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .holo-ring, .bracket, .device-screen::after { animation: none; }
+}
+
 /* Scroll cue */
 .hero-scroll-cue {
     position: absolute;
@@ -1745,6 +1812,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     .hero-visual { order: -1; }
     .device-phone { width: 160px; height: 328px; }
     .hero-device-glow { width: 200px; height: 200px; }
+    .holo-ring { width: 240px; height: 240px; }
     .hero-scroll-cue { color: rgba(255,255,255,0.55); bottom: 28px; }
 
     .grid-3 { grid-template-columns: 1fr 1fr; }
