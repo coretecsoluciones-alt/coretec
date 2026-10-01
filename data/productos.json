@@ -21,9 +21,12 @@
 
     { "id": "ipad-pro",       "web": "iPad Pro",            "empieza": ["iPad Pro"] },
     { "id": "ipad-air",       "web": "iPad Air",            "empieza": ["iPad Air"] },
+    { "id": "ipad",           "web": "iPad",                "empieza": ["iPad"], "excluye": ["Air", "Pro", "Mini"] },
+    { "id": "ipad-mini",      "web": "iPad mini",           "empieza": ["iPad mini"] },
 
     { "id": "watch-ultra",    "web": "Apple Watch Ultra",   "empieza": ["Apple Watch Ultra"] },
     { "id": "watch-series",   "web": "Apple Watch Series",  "empieza": ["Apple Watch Series"] },
+    { "id": "watch-se",       "web": "Apple Watch SE",      "empieza": ["Apple Watch SE"] },
 
     { "id": "airtag",           "web": "AirTag (destacado)",           "empieza": ["AirTag x1"] },
     { "id": "apple-pencil-pro", "web": "Apple Pencil Pro (destacado)", "empieza": ["Apple Pencil Pro"] },

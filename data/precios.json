@@ -61,6 +61,18 @@
       "opciones": 5,
       "fecha": "2026-10-01"
     },
+    "ipad": {
+      "usd": 500,
+      "lista": "iPad A16 11\" 128GB WiFi",
+      "opciones": 2,
+      "fecha": "2026-10-01"
+    },
+    "ipad-mini": {
+      "usd": 725,
+      "lista": "iPad Mini 7 8.3\" 128GB WiFi",
+      "opciones": 1,
+      "fecha": "2026-10-01"
+    },
     "watch-ultra": {
       "usd": 750,
       "lista": "Apple Watch Ultra 3 49mm",
@@ -71,6 +83,12 @@
       "usd": 390,
       "lista": "Apple Watch Series 11 42mm",
       "opciones": 4,
+      "fecha": "2026-10-01"
+    },
+    "watch-se": {
+      "usd": 290,
+      "lista": "Apple Watch SE 3 40mm",
+      "opciones": 2,
       "fecha": "2026-10-01"
     },
     "airtag": {

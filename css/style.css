@@ -1911,6 +1911,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
     .grid-3 { grid-template-columns: 1fr 1fr; }
     .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3.grid-keep-3 { grid-template-columns: repeat(3, 1fr); } /* 3 cards: avoid a lone card on tablet */
     .grid-2 { grid-template-columns: 1fr; }
 
     .trust-row { flex-direction: column; gap: 0; }
@@ -1927,6 +1928,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     .grid-3 { grid-template-columns: 1fr; }
     .grid-4 { grid-template-columns: 1fr 1fr; }
     .grid-4.grid-stack-sm { grid-template-columns: 1fr; } /* large cards (Mac): one per row */
+    .grid-3.grid-keep-3 { grid-template-columns: 1fr; }
 
     .ig-posts-grid { grid-template-columns: 1fr; }
     .process-card,
