@@ -1,0 +1,80 @@
+{
+  "actualizado": "2026-10-01",
+  "precios": {
+    "iphone-17-pro": {
+      "usd": 1185,
+      "lista": "iPhone 17 Pro 256GB",
+      "fecha": "2026-10-01"
+    },
+    "iphone-air": {
+      "usd": 1025,
+      "lista": "iPhone 17 Air 256GB",
+      "fecha": "2026-10-01"
+    },
+    "iphone-17": {
+      "usd": 980,
+      "lista": "iPhone 17 256GB",
+      "fecha": "2026-10-01"
+    },
+    "iphone-17e": {
+      "usd": 770,
+      "lista": "iPhone 17e 256GB",
+      "fecha": "2026-10-01"
+    },
+    "macbook-pro": {
+      "usd": 2645,
+      "lista": "MacBook Pro 14\" M5 Pro 24GB/1TB",
+      "fecha": "2026-10-01"
+    },
+    "macbook-neo": {
+      "usd": 795,
+      "lista": "MacBook Neo 13\" 8GB/256GB",
+      "fecha": "2026-10-01"
+    },
+    "ipad-pro-m5": {
+      "usd": 1175,
+      "lista": "iPad Pro M5 11\" 256GB WiFi",
+      "fecha": "2026-10-01"
+    },
+    "ipad-air-m3": {
+      "usd": 830,
+      "lista": "iPad Air M3 13\" 128GB WiFi",
+      "fecha": "2026-10-01"
+    },
+    "watch-ultra-3": {
+      "usd": 750,
+      "lista": "Apple Watch Ultra 3 49mm",
+      "fecha": "2026-10-01"
+    },
+    "watch-series-11": {
+      "usd": 390,
+      "lista": "Apple Watch Series 11 42mm",
+      "fecha": "2026-10-01"
+    },
+    "airtag": {
+      "usd": 45,
+      "lista": "AirTag x1 2nd Gen",
+      "fecha": "2026-10-01"
+    },
+    "apple-pencil-pro": {
+      "usd": 155,
+      "lista": "Apple Pencil Pro",
+      "fecha": "2026-10-01"
+    },
+    "airpods-max": {
+      "usd": 555,
+      "lista": "AirPods Max 2 USB-C",
+      "fecha": "2026-10-01"
+    },
+    "airpods": {
+      "usd": 150,
+      "lista": "AirPods 4",
+      "fecha": "2026-10-01"
+    },
+    "cargador-usbc": {
+      "usd": 30,
+      "lista": "Cargador Apple USB-C 20W",
+      "fecha": "2026-10-01"
+    }
+  }
+}
