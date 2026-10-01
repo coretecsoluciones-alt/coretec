@@ -9,9 +9,10 @@ Opciones:
     --forzar   acepta cambios de precio mayores al límite de seguridad
     --si       no pide confirmación antes de publicar
 
-Solo actualiza los productos definidos en data/productos.json. Todo lo demás
-de la lista se ignora; los productos que no vienen en la lista de hoy quedan
-sin precio y la web muestra "Consultar disponibilidad".
+Cada card de la web es una familia (data/productos.json) y muestra el menor
+precio de la lista dentro de esa familia ("Desde USD X"). Todo lo demás de la
+lista se ignora; las familias sin ninguna opción en la lista de hoy quedan sin
+precio y la web muestra "Consultar disponibilidad".
 """
 import json
 import re
@@ -79,6 +80,17 @@ def parsear_lista(texto):
     return items
 
 
+def pertenece(clave, empieza, excluye):
+    """True si el nombre normalizado empieza con alguno de los prefijos (como
+    palabra completa) y el resto no contiene ninguna palabra excluida."""
+    for pre in empieza:
+        if clave == pre or clave.startswith(pre + ' '):
+            resto = ' ' + re.sub(r'[/,()]', ' ', clave[len(pre):]) + ' '
+            if not any(f' {x} ' in resto for x in excluye):
+                return True
+    return False
+
+
 def fmt(usd):
     return f"USD {usd:,.0f}".replace(',', '.')
 
@@ -123,9 +135,10 @@ def main():
 
     config = json.loads(PRODUCTOS.read_text(encoding='utf-8'))['productos']
     ids = [p['id'] for p in config]
-    claves = [normalizar(p['lista']) for p in config if p.get('lista')]
-    if len(set(ids)) != len(ids) or len(set(claves)) != len(claves):
-        sys.exit('✗ data/productos.json tiene ids o nombres de lista repetidos. Corregilo antes de seguir.')
+    if len(set(ids)) != len(ids):
+        sys.exit('✗ data/productos.json tiene ids repetidos. Corregilo antes de seguir.')
+    reglas = [(p, [normalizar(e) for e in p['empieza']], [normalizar(x) for x in p.get('excluye', [])])
+              for p in config]
 
     anterior = json.loads(PRECIOS.read_text(encoding='utf-8')) if PRECIOS.exists() else {}
     previos = anterior.get('precios', {})
@@ -134,51 +147,45 @@ def main():
     if len(items) < MIN_LINEAS:
         sys.exit(f'✗ Solo encontré {len(items)} líneas con precio. ¿Copiaste la lista completa?')
 
-    lista = {}
-    conflictos = set()
+    # Cada línea de la lista va a UNA familia como máximo; si cae en dos, las reglas están mal.
+    familias = {p['id']: [] for p in config}
+    errores = []
     for nombre, clave, precio in items:
-        if clave in lista and lista[clave][1] != precio:
-            conflictos.add(clave)
-        lista.setdefault(clave, (nombre, precio))
+        duenos = [p for p, empieza, excluye in reglas if pertenece(clave, empieza, excluye)]
+        if len(duenos) > 1:
+            errores.append(f"'{nombre}' entra en más de una familia: {', '.join(p['web'] for p in duenos)}.")
+        for p in duenos:
+            familias[p['id']].append((precio, nombre))
 
     hoy = date.today().isoformat()
     nuevos = {}
-    actualizados, sin_cambio, faltantes, sin_mapeo, grandes, errores = [], [], [], [], [], []
+    actualizados, sin_cambio, faltantes, grandes = [], [], [], []
 
     for p in config:
         pid, previo = p['id'], previos.get(p['id'])
-        if not p.get('lista'):
-            sin_mapeo.append(p)
-            continue
-        clave = normalizar(p['lista'])
-        if clave in conflictos:
-            errores.append(f"'{p['lista']}' aparece más de una vez en la lista con precios distintos.")
-            continue
-        if clave not in lista:
+        miembros = familias[pid]
+        if not miembros:
             faltantes.append(p)                       # sin precio hoy
             continue
-        nombre, precio = lista[clave]
-        nuevos[pid] = {'usd': precio, 'lista': nombre, 'fecha': hoy}
+        precio, nombre = min(miembros)                # precio de entrada de la familia
+        nuevos[pid] = {'usd': precio, 'lista': nombre, 'opciones': len(miembros), 'fecha': hoy}
+        fila = (p, previo, precio, nombre, len(miembros))
         if previo and previo.get('usd') == precio:
-            sin_cambio.append((p, precio))
+            sin_cambio.append(fila)
         else:
-            actualizados.append((p, previo, precio))
+            actualizados.append(fila)
             if previo and abs(precio - previo['usd']) / previo['usd'] > MAX_CAMBIO:
-                grandes.append((p, previo, precio))
+                grandes.append(fila)
 
     # ── Reporte ──
-    mapeados = len(config) - len(sin_mapeo)
-    print(f'Lista leída: {len(items)} productos. Coinciden con la web: '
-          f'{len(actualizados) + len(sin_cambio)} de {mapeados}.\n')
-    for p, previo, precio in actualizados:
-        antes = f"{fmt(previo['usd'])} → " if previo else ''
-        print(f"  ✓ {p['web']:<30} {antes}{fmt(precio)}")
-    for p, precio in sin_cambio:
-        print(f"  = {p['web']:<30} {fmt(precio)} (sin cambios)")
+    print(f'Lista leída: {len(items)} productos. Familias de la web con precio hoy: '
+          f'{len(actualizados) + len(sin_cambio)} de {len(config)}.\n')
+    for marca, filas in (('✓', actualizados), ('=', sin_cambio)):
+        for p, previo, precio, nombre, n in filas:
+            antes = f"{fmt(previo['usd'])} → " if previo and marca == '✓' else ''
+            print(f"  {marca} {p['web']:<30} {antes}Desde {fmt(precio)}   ← {nombre} ({n} en la familia)")
     for p in faltantes:
-        print(f"  ⚠ {p['web']:<30} no está en la lista de hoy ('{p['lista']}') → 'Consultar disponibilidad'")
-    for p in sin_mapeo:
-        print(f"  · {p['web']:<30} sin producto asignado → 'Consultar disponibilidad'")
+        print(f"  ⚠ {p['web']:<30} ninguna opción en la lista de hoy → 'Consultar disponibilidad'")
 
     if errores:
         print('\n✗ No se publicó nada:\n  ' + '\n  '.join(errores))
@@ -188,7 +195,7 @@ def main():
     if grandes and not forzar:
         print(f'\n✗ No se publicó nada: estos precios cambian más de {MAX_CAMBIO:.0%}, '
               'puede ser un producto confundido:')
-        for p, previo, precio in grandes:
+        for p, previo, precio, *_ in grandes:
             print(f"    {p['web']}: {fmt(previo['usd'])} → {fmt(precio)}")
         print('  Si son correctos, volvé a correr con --forzar.')
         sys.exit(1)

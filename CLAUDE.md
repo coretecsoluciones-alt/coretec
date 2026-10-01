@@ -11,7 +11,7 @@ coretec/
 ├── css/style.css       # Todos los estilos
 ├── js/main.js          # Interacciones y animaciones JS
 ├── images/             # Assets visuales (ver README.md)
-├── data/productos.json # Cards con precio → nombre en la lista diaria (editar a mano)
+├── data/productos.json # Reglas de familia por card (empieza/excluye) → precio "Desde" = mínimo de la familia
 ├── data/precios.json   # Precios publicados (GENERADO, no editar)
 ├── scripts/actualizar_precios.py  # Lista diaria → precios.json + commit/push
 ├── Actualizar precios.command     # Lanzador doble clic del script
@@ -23,7 +23,7 @@ coretec/
 2. **Hero** — Full-screen dark, mockup CSS iPhone animado, gradient ambiental
 3. **Trust Strip** — 4 pilares de confianza horizontales
 4. **iPhone** — Grid 3 cols + feature strip inferior
-5. **Mac** — Sección dark, grid 3 cols
+5. **Mac** — Sección dark, grid 4 cols (Pro, Air, Neo, mini)
 6. **iPad** — Sección light, grid 2 cols
 7. **Apple Watch** — Sección CORETEC deep blue, grid 2 cols
 8. **Accesorios** — Grid 4 cols

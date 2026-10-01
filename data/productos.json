@@ -1,33 +1,36 @@
 {
   "_ayuda": [
-    "Productos publicados en la web y qué línea de la lista diaria define su precio ('Desde USD X').",
+    "Cada card de la web representa una FAMILIA. Su precio es 'Desde USD X' = el menor precio de la lista diaria dentro de esa familia.",
     "id: identificador fijo de la card en index.html (data-price=\"...\"). No cambiarlo.",
-    "lista: nombre EXACTO del producto en la lista diaria. Se ignoran mayúsculas, acentos, comillas, asteriscos y espacios ('256 GB' = '256GB'), pero NO se adivina nada: 'iPhone 17 Pro' nunca coincide con 'iPhone 17 Pro Max'.",
-    "lista: null -> la card no muestra precio (queda solo 'Consultar precio').",
-    "Productos de la lista que no figuran acá se ignoran. Agregar o quitar un producto acá no crea ni borra cards."
+    "empieza: el nombre del producto en la lista tiene que EMPEZAR con alguno de estos textos, como palabra completa ('iPhone 17' no incluye 'iPhone 17e').",
+    "excluye: si el resto del nombre contiene alguna de estas palabras, no pertenece a la familia (ej. AirPods excluye Pro y Max).",
+    "Se ignoran mayúsculas, acentos, comillas, asteriscos y espacios ('256 GB' = '256GB').",
+    "Si una línea de la lista cae en dos familias a la vez, el script se frena y no publica nada.",
+    "Productos de la lista que no caen en ninguna familia se ignoran. Nunca se crean ni se borran cards."
   ],
   "productos": [
-    { "id": "iphone-17-pro",     "web": "iPhone 17 Pro",         "lista": "iPhone 17 Pro 256GB" },
-    { "id": "iphone-air",        "web": "iPhone Air",            "lista": "iPhone 17 Air 256GB" },
-    { "id": "iphone-17",         "web": "iPhone 17",             "lista": "iPhone 17 256GB" },
-    { "id": "iphone-17e",        "web": "iPhone 17e",            "lista": "iPhone 17e 256GB" },
+    { "id": "iphone-17-pro",  "web": "iPhone 17 Pro",       "empieza": ["iPhone 17 Pro"], "excluye": ["Max"] },
+    { "id": "iphone-air",     "web": "iPhone Air",          "empieza": ["iPhone 17 Air", "iPhone Air"] },
+    { "id": "iphone-17",      "web": "iPhone 17",           "empieza": ["iPhone 17"], "excluye": ["Pro", "Air", "Plus", "Max"] },
+    { "id": "iphone-17e",     "web": "iPhone 17e",          "empieza": ["iPhone 17e"] },
 
-    { "id": "macbook-pro",       "web": "MacBook Pro",           "lista": "MacBook Pro 14 M5 Pro 24GB/1TB" },
-    { "id": "macbook-neo",       "web": "MacBook Neo",           "lista": "MacBook Neo 13 8GB/256GB" },
-    { "id": "mac-mini-m5",       "web": "Mac mini M5",           "lista": null },
+    { "id": "macbook-pro",    "web": "MacBook Pro",         "empieza": ["MacBook Pro"] },
+    { "id": "macbook-air",    "web": "MacBook Air",         "empieza": ["MacBook Air"] },
+    { "id": "macbook-neo",    "web": "MacBook Neo",         "empieza": ["MacBook Neo"] },
+    { "id": "mac-mini",       "web": "Mac mini",            "empieza": ["Mac mini"] },
 
-    { "id": "ipad-pro-m5",       "web": "iPad Pro M5",           "lista": "iPad Pro M5 11 256GB WiFi" },
-    { "id": "ipad-air-m3",       "web": "iPad Air M3",           "lista": "iPad Air M3 13 128GB WiFi" },
+    { "id": "ipad-pro",       "web": "iPad Pro",            "empieza": ["iPad Pro"] },
+    { "id": "ipad-air",       "web": "iPad Air",            "empieza": ["iPad Air"] },
 
-    { "id": "watch-ultra-3",     "web": "Apple Watch Ultra 3",   "lista": "Apple Watch Ultra 3 49mm" },
-    { "id": "watch-series-11",   "web": "Apple Watch Series 11", "lista": "Apple Watch Series 11 42mm" },
+    { "id": "watch-ultra",    "web": "Apple Watch Ultra",   "empieza": ["Apple Watch Ultra"] },
+    { "id": "watch-series",   "web": "Apple Watch Series",  "empieza": ["Apple Watch Series"] },
 
-    { "id": "airtag",            "web": "AirTag (destacado)",    "lista": "AirTag x1 2nd Gen" },
-    { "id": "apple-pencil-pro",  "web": "Apple Pencil Pro (destacado)", "lista": "Apple Pencil Pro" },
+    { "id": "airtag",           "web": "AirTag (destacado)",           "empieza": ["AirTag x1"] },
+    { "id": "apple-pencil-pro", "web": "Apple Pencil Pro (destacado)", "empieza": ["Apple Pencil Pro"] },
 
-    { "id": "airpods-max",       "web": "AirPods Max",           "lista": "AirPods Max 2 USB-C" },
-    { "id": "airpods",           "web": "AirPods",               "lista": "AirPods 4" },
-    { "id": "airpods-pro-2",     "web": "AirPods Pro 2",         "lista": null },
-    { "id": "cargador-usbc",     "web": "Cargador USB-C",        "lista": "Cargador Apple USB-C 20W" }
+    { "id": "airpods-max",    "web": "AirPods Max",         "empieza": ["AirPods Max"] },
+    { "id": "airpods",        "web": "AirPods",             "empieza": ["AirPods"], "excluye": ["Pro", "Max"] },
+    { "id": "airpods-pro",    "web": "AirPods Pro",         "empieza": ["AirPods Pro"] },
+    { "id": "cargador-usbc",  "web": "Cargador USB-C",      "empieza": ["Cargador Apple USB-C"] }
   ]
 }
