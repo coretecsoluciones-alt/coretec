@@ -97,12 +97,6 @@
       "opciones": 2,
       "fecha": "2026-10-01"
     },
-    "apple-pencil-pro": {
-      "usd": 155,
-      "lista": "Apple Pencil Pro",
-      "opciones": 1,
-      "fecha": "2026-10-01"
-    },
     "airpods-max": {
       "usd": 555,
       "lista": "AirPods Max 2 USB-C",
@@ -125,6 +119,12 @@
       "usd": 30,
       "lista": "Cargador Apple USB-C 20W",
       "opciones": 1,
+      "fecha": "2026-10-01"
+    },
+    "apple-pencil": {
+      "usd": 105,
+      "lista": "Apple Pencil USB-C",
+      "opciones": 2,
       "fecha": "2026-10-01"
     }
   }
