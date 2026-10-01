@@ -166,15 +166,26 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    transition: background 0.3s var(--ease), backdrop-filter 0.3s, box-shadow 0.3s;
 }
 
-.site-header.scrolled {
+/* Glass background lives on a pseudo-element: a backdrop-filter on the header
+   itself would become the containing block of the fixed .mobile-menu and
+   collapse it to the header's height. */
+.site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
     background: rgba(0, 0, 0, 0.72);
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     box-shadow: 0 1px 0 rgba(255,255,255,0.08);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease), background 0.3s;
+    pointer-events: none;
 }
+.site-header.scrolled::before { opacity: 1; }
+.site-header.menu-open::before { opacity: 1; background: #1d1d1f; }
 
 .nav-container {
     display: flex;
@@ -255,41 +266,53 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
 /* Mobile menu */
 .mobile-menu {
-    display: none;
     position: fixed;
-    inset: var(--header-h) 0 0 0;
+    top: var(--header-h);
+    left: 0; right: 0;
+    height: calc(100vh - var(--header-h));
+    height: calc(100dvh - var(--header-h));
     background: #1d1d1f;
-    padding: 32px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 24px 24px calc(32px + env(safe-area-inset-bottom, 0px));
+    display: flex;
     flex-direction: column;
     gap: 32px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     z-index: 99;
     transform: translateY(-10px);
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: transform 0.3s var(--ease), opacity 0.3s;
+    transition: transform 0.3s var(--ease), opacity 0.3s, visibility 0s linear 0.3s;
 }
 .mobile-menu.open {
-    display: flex;
     transform: translateY(0);
     opacity: 1;
-    pointer-events: all;
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform 0.3s var(--ease), opacity 0.3s, visibility 0s;
 }
-.mobile-menu ul { display: flex; flex-direction: column; gap: 4px; }
-.mobile-menu a {
+.mobile-menu ul { display: flex; flex-direction: column; }
+.mobile-menu li a {
     display: block;
-    font-size: 22px;
+    font-size: clamp(19px, 5.4vw, 22px);
     font-weight: 500;
     color: var(--white);
-    padding: 12px 0;
+    padding: 14px 0;
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-.mobile-menu a:hover,
-.mobile-menu a:active { color: rgba(255,255,255,0.65); }
+.mobile-menu li a:hover,
+.mobile-menu li a:active { color: rgba(255,255,255,0.65); }
 .mobile-menu .btn-full {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    flex-shrink: 0;
+}
+@media (min-width: 861px) {
+    .mobile-menu { display: none; }
 }
 
 /* ======================
@@ -298,6 +321,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 .hero {
     position: relative;
     min-height: 100vh;
+    min-height: 100svh;
     background: var(--black);
     display: flex;
     align-items: center;
@@ -401,6 +425,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 
 .hero-device-wrap {
+    --u: 1px; /* mockup scale unit: 1px on desktop, fluid on mobile */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -409,9 +434,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 
 .hero-device-glow {
     position: absolute;
-    width: 260px; height: 260px;
+    width: calc(260 * var(--u)); height: calc(260 * var(--u));
     background: radial-gradient(circle, rgba(0,95,255,0.4) 0%, transparent 70%);
-    filter: blur(50px);
+    filter: blur(calc(50 * var(--u)));
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     animation: glowPulse 3s ease-in-out infinite alternate;
@@ -429,50 +454,50 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 }
 @keyframes deviceFloat {
     0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-12px); }
+    50%       { transform: translateY(calc(-12 * var(--u))); }
 }
 
 /* CSS iPhone mockup */
 .device-phone {
-    width: 200px;
-    height: 410px;
+    width: calc(200 * var(--u));
+    height: calc(410 * var(--u));
     background: linear-gradient(145deg, #1C1C1E 0%, #2C2C2E 40%, #1A1A1C 100%);
-    border-radius: 38px;
+    border-radius: calc(38 * var(--u));
     position: relative;
     box-shadow:
         0 0 0 1.5px rgba(255,255,255,0.12),
-        0 40px 80px rgba(0,0,0,0.6),
+        0 calc(40 * var(--u)) calc(80 * var(--u)) rgba(0,0,0,0.6),
         inset 0 1px 0 rgba(255,255,255,0.08);
     overflow: hidden;
 }
 
 .device-notch {
     position: absolute;
-    top: 14px; left: 50%;
+    top: calc(14 * var(--u)); left: 50%;
     transform: translateX(-50%);
-    width: 90px; height: 24px;
+    width: calc(90 * var(--u)); height: calc(24 * var(--u));
     background: var(--black);
-    border-radius: 12px;
+    border-radius: calc(12 * var(--u));
     z-index: 2;
     box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
 }
 .device-notch::after {
     content: '';
     position: absolute;
-    top: 50%; left: 14px;
+    top: 50%; left: calc(14 * var(--u));
     transform: translateY(-50%);
-    width: 10px; height: 10px;
+    width: calc(10 * var(--u)); height: calc(10 * var(--u));
     background: #1C3050;
     border-radius: 50%;
-    box-shadow: 0 0 6px rgba(0,95,255,0.8);
+    box-shadow: 0 0 calc(6 * var(--u)) rgba(0,95,255,0.8);
 }
 
 .device-screen {
     position: absolute;
     inset: 0;
     background: linear-gradient(160deg, #0A1628 0%, #001040 50%, #000820 100%);
-    border-radius: 36px;
-    padding: 56px 16px 30px;
+    border-radius: calc(36 * var(--u));
+    padding: calc(56 * var(--u)) calc(16 * var(--u)) calc(30 * var(--u));
     overflow: hidden;
 }
 .device-screen::before {
@@ -483,26 +508,26 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     background: radial-gradient(ellipse, rgba(0,95,255,0.15) 0%, transparent 70%);
 }
 
-.device-screen-inner { height: 100%; display: flex; flex-direction: column; gap: 16px; }
+.device-screen-inner { height: 100%; display: flex; flex-direction: column; gap: calc(16 * var(--u)); }
 
 .screen-status {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: calc(10 * var(--u));
     font-weight: 600;
     color: rgba(255,255,255,0.8);
-    padding: 0 4px;
+    padding: 0 calc(4 * var(--u));
 }
 
 .screen-app-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    padding: 4px;
+    gap: calc(10 * var(--u));
+    padding: calc(4 * var(--u));
 }
 .app-icon {
-    width: 44px; height: 44px;
-    border-radius: 12px;
+    width: calc(44 * var(--u)); height: calc(44 * var(--u));
+    border-radius: calc(12 * var(--u));
     opacity: 0.7;
 }
 .app-blue       { background: linear-gradient(145deg, #0052CC, #0066FF); }
@@ -514,45 +539,45 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     margin-top: auto;
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: calc(12 * var(--u));
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 10px 16px;
+    backdrop-filter: blur(calc(10 * var(--u)));
+    border-radius: calc(20 * var(--u));
+    padding: calc(10 * var(--u)) calc(16 * var(--u));
 }
 .dock-icon {
-    width: 38px; height: 38px;
-    border-radius: 10px;
+    width: calc(38 * var(--u)); height: calc(38 * var(--u));
+    border-radius: calc(10 * var(--u));
     background: rgba(255,255,255,0.12);
 }
 
 .device-button-side {
     position: absolute;
-    right: -2px; top: 120px;
-    width: 3px; height: 60px;
+    right: calc(-2 * var(--u)); top: calc(120 * var(--u));
+    width: calc(3 * var(--u)); height: calc(60 * var(--u));
     background: rgba(255,255,255,0.15);
     border-radius: 2px 0 0 2px;
 }
 .device-action-button {
     position: absolute;
-    left: -2px; top: 80px;
-    width: 3px; height: 30px;
+    left: calc(-2 * var(--u)); top: calc(80 * var(--u));
+    width: calc(3 * var(--u)); height: calc(30 * var(--u));
     background: rgba(255,255,255,0.1);
     border-radius: 0 2px 2px 0;
 }
 
 .hero-device-reflection {
-    width: 200px; height: 30px;
+    width: calc(200 * var(--u)); height: calc(30 * var(--u));
     background: radial-gradient(ellipse, rgba(0,95,255,0.3) 0%, transparent 70%);
-    filter: blur(12px);
-    margin-top: 12px;
+    filter: blur(calc(12 * var(--u)));
+    margin-top: calc(12 * var(--u));
     opacity: 0.5;
 }
 
 /* Holo Ring — rotating aura behind the device */
 .holo-ring {
     position: absolute;
-    width: 300px; height: 300px;
+    width: calc(300 * var(--u)); height: calc(300 * var(--u));
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
@@ -572,7 +597,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 /* AR-style recognition brackets around the device */
 .bracket {
     position: absolute;
-    width: 26px; height: 26px;
+    width: calc(26 * var(--u)); height: calc(26 * var(--u));
     z-index: 3;
     opacity: 0;
     animation: bracketPulse 3s ease-in-out infinite;
@@ -582,12 +607,12 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     content: '';
     position: absolute;
     background: var(--blue-light);
-    box-shadow: 0 0 6px rgba(77,143,255,0.8);
+    box-shadow: 0 0 calc(6 * var(--u)) rgba(77,143,255,0.8);
 }
-.bracket-tl { top: 34px; left: -14px; animation-delay: 0s; }
-.bracket-tr { top: 34px; right: -14px; animation-delay: 0.15s; }
-.bracket-bl { bottom: 34px; left: -14px; animation-delay: 0.3s; }
-.bracket-br { bottom: 34px; right: -14px; animation-delay: 0.45s; }
+.bracket-tl { top: calc(34 * var(--u)); left: calc(-14 * var(--u)); animation-delay: 0s; }
+.bracket-tr { top: calc(34 * var(--u)); right: calc(-14 * var(--u)); animation-delay: 0.15s; }
+.bracket-bl { bottom: calc(34 * var(--u)); left: calc(-14 * var(--u)); animation-delay: 0.3s; }
+.bracket-br { bottom: calc(34 * var(--u)); right: calc(-14 * var(--u)); animation-delay: 0.45s; }
 .bracket-tl::before, .bracket-tr::before, .bracket-bl::before, .bracket-br::before { width: 100%; height: 2px; top: 0; }
 .bracket-tl::after, .bracket-tr::after, .bracket-bl::after, .bracket-br::after { width: 2px; height: 100%; left: 0; }
 .bracket-bl::before, .bracket-br::before { top: auto; bottom: 0; }
@@ -777,6 +802,46 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
 @media (max-width: 480px) {
     .iphone-hero-title { font-size: 2rem; }
     .iphone-hero-ctas  { flex-direction: column; align-items: center; }
+}
+
+/* Portrait viewports: the square video can't "cover" a tall box without a
+   huge side crop, so stack it under the copy and show it whole instead. */
+@media (max-aspect-ratio: 1/1) {
+    .iphone-hero-section {
+        --vid: min(100vw, 72vh);
+        --vid: min(100vw, 72svh);
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        flex-direction: column;
+        align-items: center;
+        background: #fff; /* matches the video's own background */
+    }
+    .iphone-hero-video {
+        position: relative;
+        inset: auto;
+        width: min(100%, 72vh);
+        width: min(100%, 72svh);
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        order: 1; /* below the copy */
+        margin-top: calc(var(--vid) * -0.12); /* top of the clip is empty */
+    }
+    /* Same darkened-top look as desktop: solid behind the copy,
+       fading out over the upper part of the video. */
+    .iphone-hero-overlay {
+        bottom: auto;
+        height: calc(100% - var(--vid) * 0.55);
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.66) 0%,
+            rgba(0, 0, 0, 0.6) calc(100% - var(--vid) * 0.33),
+            rgba(0, 0, 0, 0) 100%
+        );
+    }
+    .iphone-hero-sub  { color: rgba(255, 255, 255, 0.85); }
+    .iphone-hero-fade { height: calc(var(--vid) * 0.22); }
 }
 
 /* ======================
@@ -1807,12 +1872,15 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     .nav-links, .nav-actions { display: none; }
     .nav-toggle { display: flex; }
 
-    .hero-content { flex-direction: column; text-align: center; padding-bottom: 112px; }
+    .hero-content { flex-direction: column; text-align: center; gap: 36px; padding-top: calc(var(--header-h) + 40px); padding-bottom: 112px; }
     .hero-ctas { justify-content: center; }
     .hero-visual { order: -1; }
-    .device-phone { width: 160px; height: 328px; }
-    .hero-device-glow { width: 200px; height: 200px; }
-    .holo-ring { width: 240px; height: 240px; }
+    /* Scale the whole mockup proportionally from viewport width AND height,
+       so it never dominates short or narrow screens. */
+    .hero-device-wrap {
+        --u: clamp(0.6px, min(0.21vw, 0.105vh), 1px);
+        --u: clamp(0.6px, min(0.21vw, 0.105svh), 1px);
+    }
     .hero-scroll-cue { color: rgba(255,255,255,0.55); bottom: 28px; }
 
     .grid-3 { grid-template-columns: 1fr 1fr; }

@@ -55,28 +55,42 @@
     const mobileMenu = document.getElementById('mobileMenu');
 
     if (navToggle && mobileMenu) {
+        function setMenu(open) {
+            mobileMenu.classList.toggle('open', open);
+            navToggle.classList.toggle('open', open);
+            header.classList.toggle('menu-open', open);
+            navToggle.setAttribute('aria-expanded', String(open));
+            navToggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+            document.body.style.overflow = open ? 'hidden' : '';
+        }
+
         navToggle.addEventListener('click', () => {
-            const isOpen = mobileMenu.classList.toggle('open');
-            navToggle.classList.toggle('open', isOpen);
-            document.body.style.overflow = isOpen ? 'hidden' : '';
+            setMenu(!mobileMenu.classList.contains('open'));
         });
 
         // Close on link click
         mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                navToggle.classList.remove('open');
-                document.body.style.overflow = '';
-            });
+            link.addEventListener('click', () => setMenu(false));
         });
 
         // Close on outside click
         document.addEventListener('click', (e) => {
             if (!header.contains(e.target) && mobileMenu.classList.contains('open')) {
-                mobileMenu.classList.remove('open');
-                navToggle.classList.remove('open');
-                document.body.style.overflow = '';
+                setMenu(false);
             }
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+                setMenu(false);
+                navToggle.focus();
+            }
+        });
+
+        // Close when growing past the mobile breakpoint
+        window.matchMedia('(min-width: 861px)').addEventListener('change', (e) => {
+            if (e.matches) setMenu(false);
         });
     }
 
