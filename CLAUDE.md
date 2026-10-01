@@ -11,7 +11,11 @@ coretec/
 ├── css/style.css       # Todos los estilos
 ├── js/main.js          # Interacciones y animaciones JS
 ├── images/             # Assets visuales (ver README.md)
-└── docs/STRUCTURE.md   # Decisiones de arquitectura
+├── data/productos.json # Cards con precio → nombre en la lista diaria (editar a mano)
+├── data/precios.json   # Precios publicados (GENERADO, no editar)
+├── scripts/actualizar_precios.py  # Lista diaria → precios.json + commit/push
+├── Actualizar precios.command     # Lanzador doble clic del script
+└── docs/PRECIOS.md     # Flujo diario de precios
 ```
 
 ## Secciones
@@ -51,6 +55,7 @@ coretec/
 - WhatsApp: `https://wa.me/message/AEAC4UFJWENON1`
 - Instagram: `https://www.instagram.com/coretec.ar/`
 - Cada producto tiene un botón "Consultar precio" → WhatsApp
+- Precios "Desde USD X": `<p class="card-price" data-price="id" hidden>` se llena desde `data/precios.json` (ver `docs/PRECIOS.md`)
 - Floating button siempre visible
 - CTA banner dedicado antes del footer
 
@@ -63,4 +68,3 @@ coretec/
 ## Pendiente
 - Agregar más productos por categoría si es necesario
 - Integración real con Instagram API para mostrar posts recientes
-- Precios cuando estén disponibles (mostrar rango o "desde $X")

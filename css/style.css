@@ -1132,6 +1132,32 @@ button { cursor: pointer; border: none; background: none; font: inherit; }
     margin-bottom: 20px;
 }
 
+/* Price ("Desde USD X") — filled from data/precios.json by main.js */
+.card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--gray-900);
+    margin: -6px 0 14px;
+}
+.card-price[hidden] { display: none; }
+.card-price-from {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--gray-500);
+}
+.card-dark .card-price,
+.card-glass .card-price { color: var(--white); }
+.card-dark .card-price-from,
+.card-glass .card-price-from { color: rgba(255,255,255,0.55); }
+.product-card-sm .card-price { font-size: 15px; margin: -4px 0 12px; }
+.highlight-price { font-size: 22px; margin: -12px 0 24px; }
+.highlight-price .card-price-from { font-size: 14px; }
+
 .card-cta {
     font-size: 14px;
     font-weight: 600;
