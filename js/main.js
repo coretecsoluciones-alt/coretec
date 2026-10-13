@@ -44,7 +44,10 @@
             rootMargin: '0px 0px -40px 0px'
         });
 
-        revealEls.forEach(el => io.observe(el));
+        // During the intro splash, wait for it to lift so the hero reveal is seen
+        const introOn = document.documentElement.classList.contains('intro');
+        setTimeout(() => revealEls.forEach(el => io.observe(el)), introOn ? 1700 : 0);
+        if (introOn) setTimeout(() => document.documentElement.classList.remove('intro'), 2700);
     } else {
         // Fallback: just show everything
         revealEls.forEach(el => el.classList.add('visible'));
@@ -179,19 +182,22 @@
 
     /* ── WhatsApp float: show after scroll ── */
     const waFloat = document.getElementById('waFloat');
+    const waTip = document.getElementById('waTip');
     if (waFloat) {
         waFloat.style.opacity = '0';
         waFloat.style.transform = 'scale(0.8) translateY(12px)';
         waFloat.style.transition = 'opacity 0.4s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
 
         const showFloat = () => {
-            if (window.scrollY > 300) {
+            const show = window.scrollY > 300;
+            if (show) {
                 waFloat.style.opacity = '1';
                 waFloat.style.transform = 'scale(1) translateY(0)';
             } else {
                 waFloat.style.opacity = '0';
                 waFloat.style.transform = 'scale(0.8) translateY(12px)';
             }
+            if (waTip && waTip.classList.contains('show') !== show) waTip.classList.toggle('show', show);
         };
         window.addEventListener('scroll', showFloat, { passive: true });
         showFloat();
