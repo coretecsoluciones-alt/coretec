@@ -495,16 +495,19 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
     width: calc(420 * var(--u));
     height: calc(580 * var(--u));
 }
+/* Lienzo más grande que la caja: lugar para girar el iPhone sin que se corte */
 .iphone3d-canvas {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    top: -22%; bottom: -22%;
+    left: -40%; right: -40%;
+    width: 180%;
+    height: 144%;
     display: block;
     opacity: 0;
     transition: opacity 0.8s var(--ease);
-    touch-action: pan-y; /* scroll vertical normal; arrastre horizontal = girar */
+    pointer-events: none;
 }
+.hero { touch-action: pan-y; } /* scroll vertical normal; arrastre horizontal sobre el iPhone = girar */
 .iphone3d.ready .iphone3d-canvas { opacity: 1; }
 /* Foto de respaldo: solo aparece si el 3D no cargó en 3 s */
 .iphone3d-fallback {

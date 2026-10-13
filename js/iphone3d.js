@@ -215,13 +215,19 @@ async function init(mount) {
     scene.add(phone);
 
     /* ── Tamaño ── */
+    // El canvas es más grande que la caja del teléfono (ver CSS) para que, al girarlo
+    // y quedar acostado, no se corte. Se ajusta el fov para que el iPhone mida lo mismo.
+    const FOV_BOX = 26;
     function resize() {
-        const w = mount.clientWidth, h = mount.clientHeight;
-        if (!w || !h) return;
+        const w = canvas.clientWidth, h = canvas.clientHeight, boxH = mount.clientHeight;
+        if (!w || !h || !boxH) return;
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
+        camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(FOV_BOX / 2)) * h / boxH));
         camera.updateProjectionMatrix();
     }
+    const canvas = renderer.domElement;
+    mount.appendChild(canvas);
     new ResizeObserver(resize).observe(mount);
     resize();
 
@@ -264,7 +270,6 @@ async function init(mount) {
 
     // ¿El puntero está sobre el teléfono (no sobre el espacio vacío del canvas)?
     const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-    const canvas = renderer.domElement;
     function overPhone(e) {
         const r = canvas.getBoundingClientRect();
         ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -272,8 +277,10 @@ async function init(mount) {
         return ray.intersectObject(phone, true).length > 0;
     }
 
+    // El canvas no recibe clics (se extiende sobre el texto); los eventos van a la sección
+    const zone = mount.closest('.hero') || document.body;
     let hovering = false;
-    canvas.addEventListener('pointermove', e => {
+    zone.addEventListener('pointermove', e => {
         if (drag.on) {
             const dx = (e.clientX - drag.lastX) * 0.012;
             const dy = drag.touch ? 0 : (e.clientY - drag.lastY) * 0.012;
@@ -287,10 +294,10 @@ async function init(mount) {
         const now = overPhone(e);
         if (now && !hovering) startSpin();
         hovering = now;
-        canvas.style.cursor = now ? 'grab' : '';
+        zone.style.cursor = now ? 'grab' : '';
     });
-    canvas.addEventListener('pointerleave', () => { hovering = false; canvas.style.cursor = ''; });
-    canvas.addEventListener('pointerdown', e => {
+    zone.addEventListener('pointerleave', () => { hovering = false; zone.style.cursor = ''; });
+    zone.addEventListener('pointerdown', e => {
         if (!overPhone(e)) return;
         // Si estaba girando solo, continuar el giro a mano desde donde va
         if (spin.active) {
@@ -298,22 +305,23 @@ async function init(mount) {
             turn(easeInOut(p) * TAU, 0);
             spin.active = false;
         }
+        e.preventDefault();   // no seleccionar texto mientras se arrastra
         drag.on = true;
         drag.touch = e.pointerType !== 'mouse';
         drag.lastX = e.clientX; drag.lastY = e.clientY;
         drag.vx = drag.vy = 0;
-        canvas.setPointerCapture(e.pointerId);
-        canvas.style.cursor = 'grabbing';
+        zone.setPointerCapture(e.pointerId);
+        zone.style.cursor = 'grabbing';
     });
     const endDrag = e => {
         if (!drag.on) return;
         drag.on = false;
         if (clock.getElapsedTime() - drag.lastMove > 0.08) drag.vx = drag.vy = 0;
-        canvas.style.cursor = hovering ? 'grab' : '';
-        try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+        zone.style.cursor = hovering ? 'grab' : '';
+        try { zone.releasePointerCapture(e.pointerId); } catch (err) {}
     };
-    canvas.addEventListener('pointerup', endDrag);
-    canvas.addEventListener('pointercancel', endDrag);
+    zone.addEventListener('pointerup', endDrag);
+    zone.addEventListener('pointercancel', endDrag);
 
     let visible = true, raf = 0, calm = 1;
     function frame() {
@@ -356,7 +364,6 @@ async function init(mount) {
         if (visible && !raf) raf = requestAnimationFrame(frame);
     }).observe(mount);
 
-    mount.appendChild(renderer.domElement);
     frame();
     mount.classList.add('ready');
 }
