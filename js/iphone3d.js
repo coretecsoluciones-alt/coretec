@@ -127,13 +127,22 @@ async function init(mount) {
     // Pantalla
     const bezel = 0.16;
     const sw = gw - 2 * bezel, sh = gh - 2 * bezel;
-    const screenTex = new THREE.CanvasTexture(await drawScreen(sw / sh));
+    const screenCanvas = await drawScreen(sw / sh);
+    const screenTex = new THREE.CanvasTexture(screenCanvas);
     screenTex.colorSpace = THREE.SRGBColorSpace;
     screenTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     const screen = new THREE.Mesh(
         roundedPlane(sw, sh, gr - bezel),
         new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false })
     );
+    // Reloj en vivo (hora de Buenos Aires): redibuja la pantalla cuando cambia el minuto
+    let shownTime = baClock().hora;
+    setInterval(async () => {
+        if (baClock().hora === shownTime || document.hidden) return;
+        shownTime = baClock().hora;
+        await drawScreen(sw / sh, screenCanvas);
+        screenTex.needsUpdate = true;
+    }, 5000);
     screen.position.z = D / 2 + 0.031;
     phone.add(screen);
 
@@ -369,9 +378,19 @@ async function init(mount) {
 }
 
 /* ── Lock screen dibujada en canvas ── */
-async function drawScreen(aspect) {
+/* Hora y fecha de Buenos Aires, sin importar la zona horaria de quien visita */
+function baClock() {
+    const TZ = 'America/Argentina/Buenos_Aires';
+    const now = new Date();
+    const hora = new Intl.DateTimeFormat('es-AR', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).format(now);
+    let fecha = new Intl.DateTimeFormat('es-AR', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' }).format(now).replace(',', '');
+    fecha = fecha.charAt(0).toUpperCase() + fecha.slice(1);
+    return { hora, fecha };
+}
+
+async function drawScreen(aspect, c = document.createElement('canvas')) {
     const cw = 1080, ch = Math.round(cw / aspect);
-    const c = document.createElement('canvas');
+    const { hora, fecha } = baClock();
     c.width = cw; c.height = ch;
     const g = c.getContext('2d');
     try { await document.fonts.load('700 100px Inter'); await document.fonts.load('600 40px Inter'); } catch (e) {}
@@ -415,7 +434,7 @@ async function drawScreen(aspect) {
     // Barra de estado
     g.font = font(600, 44);
     g.textAlign = 'left';
-    g.fillText('9:41', 120, 118);
+    g.fillText(hora, 120, 118);
     for (let i = 0; i < 4; i++) { rr(780 + i * 22, 112 - 12 - i * 8, 14, 12 + i * 8, 3); g.fill(); }
     rr(880, 84, 74, 36, 10); g.lineWidth = 3; g.strokeStyle = 'rgba(255,255,255,0.5)'; g.stroke();
     rr(886, 90, 56, 24, 6); g.fill();
@@ -425,16 +444,17 @@ async function drawScreen(aspect) {
     rr(cw / 2 - 190, 54, 380, 112, 56); g.fill();
 
     // Fecha y hora
-    const now = new Date();
-    let fecha = now.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(',', '');
-    fecha = fecha.charAt(0).toUpperCase() + fecha.slice(1);
     g.textAlign = 'center';
     g.fillStyle = 'rgba(255,255,255,0.88)';
     g.font = font(600, 58);
     g.fillText(fecha, cw / 2, 360);
     g.fillStyle = 'rgba(255,255,255,0.96)';
-    g.font = font(700, 330);
-    g.fillText('9:41', cw / 2, 680);
+    let size = 330;
+    g.font = font(700, size);
+    const maxW = cw - 140;
+    const tw = g.measureText(hora).width;
+    if (tw > maxW) { size = Math.floor(size * maxW / tw); g.font = font(700, size); }
+    g.fillText(hora, cw / 2, 680);
 
     // Notificación CORETEC
     const ny = ch * 0.67, nh = 230;
