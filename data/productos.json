@@ -28,12 +28,12 @@
     { "id": "watch-series",   "web": "Apple Watch Series",  "empieza": ["Apple Watch Series"] },
     { "id": "watch-se",       "web": "Apple Watch SE",      "empieza": ["Apple Watch SE"] },
 
-    { "id": "airtag",           "web": "AirTag (destacado)",           "empieza": ["AirTag x1"] },
+    { "id": "airtag",           "web": "AirTag (destacado)",           "empieza": ["AirTag x1", "AirTag Gen"], "excluye": ["x4"] },
     { "id": "apple-pencil",     "web": "Apple Pencil (destacado)",     "empieza": ["Apple Pencil"] },
 
     { "id": "airpods-max",    "web": "AirPods Max",         "empieza": ["AirPods Max"] },
     { "id": "airpods",        "web": "AirPods",             "empieza": ["AirPods"], "excluye": ["Pro", "Max"] },
     { "id": "airpods-pro",    "web": "AirPods Pro",         "empieza": ["AirPods Pro"] },
-    { "id": "cargador-usbc",  "web": "Cargador USB-C",      "empieza": ["Cargador Apple USB-C"] }
+    { "id": "cargador-usbc",  "web": "Cargador USB-C",      "empieza": ["Cargador Apple USB-C", "Cargador Apple 20W"] }
   ]
 }

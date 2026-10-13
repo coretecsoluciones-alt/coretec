@@ -63,10 +63,33 @@ def parsear_precio(s):
     return None
 
 
+# Títulos de sección de la lista (*IPHONE*, *MACBOOK*…). Desde oct-2026 las líneas
+# no repiten la familia ("17 Pro 256" bajo *IPHONE*), así que se le antepone.
+SECCIONES = {
+    'IPHONE': 'iPhone',
+    'MACBOOK': 'MacBook',
+    'MAC MINI': 'Mac mini',
+    'IMAC': 'iMac',
+    'IPAD': 'iPad',
+    'AIRPODS': 'AirPods',
+    'APPLE WATCH': 'Apple Watch',
+    'APPLE PENCIL': 'Apple Pencil',
+    'AIRTAG': 'AirTag',
+    'MAGIC KEYBOARD': 'Magic Keyboard',
+    'CARGADOR': 'Cargador',
+}
+TITULO = re.compile(r'^\*([^*\d]+)\*$')
+
+
 def parsear_lista(texto):
     """Devuelve [(nombre_original, nombre_normalizado, precio)]."""
     items = []
+    prefijo = None
     for raw in texto.splitlines():
+        t = TITULO.match(raw.strip())
+        if t:
+            prefijo = SECCIONES.get(normalizar(t[1]))
+            continue
         linea = raw.replace('*', '').replace('_', '').strip()
         linea = re.sub(r'^[^\w"]+', '', linea)        # viñetas / emojis
         m = LINEA.match(linea)
@@ -76,6 +99,8 @@ def parsear_lista(texto):
         if not precio or precio <= 0:
             continue
         nombre = m['nombre'].strip()
+        if prefijo and not pertenece(normalizar(nombre), [normalizar(prefijo)], []):
+            nombre = f'{prefijo} {nombre}'
         items.append((nombre, normalizar(nombre), precio))
     return items
 
