@@ -104,40 +104,9 @@
         <!-- CSS iPhone mockup -->
         <div class="hero-visual reveal reveal-d2">
             <div class="hero-device-wrap">
-                <div class="holo-ring"></div>
                 <div class="hero-device-glow"></div>
-                <div class="hero-device">
-                    <span class="bracket bracket-tl"></span>
-                    <span class="bracket bracket-tr"></span>
-                    <span class="bracket bracket-bl"></span>
-                    <span class="bracket bracket-br"></span>
-                    <div class="device-phone">
-                        <div class="device-notch"></div>
-                        <div class="device-screen">
-                            <div class="device-screen-inner">
-                                <div class="screen-status">
-                                    <span>9:41</span>
-                                    <span>●●●</span>
-                                </div>
-                                <div class="screen-app-grid">
-                                    <div class="app-icon app-blue"></div>
-                                    <div class="app-icon app-gray"></div>
-                                    <div class="app-icon app-dark"></div>
-                                    <div class="app-icon app-blue-light"></div>
-                                    <div class="app-icon app-gray"></div>
-                                    <div class="app-icon app-blue"></div>
-                                </div>
-                                <div class="screen-dock">
-                                    <div class="dock-icon"></div>
-                                    <div class="dock-icon"></div>
-                                    <div class="dock-icon"></div>
-                                    <div class="dock-icon"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="device-button-side"></div>
-                        <div class="device-action-button"></div>
-                    </div>
+                <div class="iphone3d" id="iphone3d" data-color="deep-blue">
+                    <img class="iphone3d-fallback" src="images/iphone17-pro-y-promax-deep-blue.webp" alt="iPhone 17 Pro" width="380" height="520">
                 </div>
                 <div class="hero-device-reflection"></div>
             </div>
@@ -894,6 +863,13 @@
 
 <a href="https://wa.me/message/AEAC4UFJWENON1" target="_blank" rel="noopener" class="wa-tip" id="waTip" tabindex="-1" aria-hidden="true">Chateá con nosotros</a>
 
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="js/iphone3d.js"></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
