@@ -1,125 +1,131 @@
 {
-  "actualizado": "2026-10-02",
+  "actualizado": "2026-10-13",
   "precios": {
     "iphone-17-pro": {
-      "usd": 1190,
-      "lista": "iPhone 17 Pro 256GB",
-      "opciones": 6,
-      "fecha": "2026-10-02"
+      "usd": 1200,
+      "lista": "iPhone 17 Pro 256",
+      "opciones": 5,
+      "fecha": "2026-10-13"
     },
     "iphone-air": {
-      "usd": 1025,
-      "lista": "iPhone 17 Air 256GB",
-      "opciones": 3,
-      "fecha": "2026-10-02"
+      "usd": 1140,
+      "lista": "iPhone 17 Air 512",
+      "opciones": 1,
+      "fecha": "2026-10-13"
     },
     "iphone-17": {
       "usd": 980,
-      "lista": "iPhone 17 256GB eSIM",
-      "opciones": 3,
-      "fecha": "2026-10-02"
+      "lista": "iPhone 17 256 eSIM",
+      "opciones": 4,
+      "fecha": "2026-10-13"
     },
     "iphone-17e": {
-      "usd": 760,
-      "lista": "iPhone 17e 256GB SIM física",
-      "opciones": 3,
-      "fecha": "2026-10-02"
+      "usd": 770,
+      "lista": "iPhone 17e 256",
+      "opciones": 2,
+      "fecha": "2026-10-13"
     },
     "macbook-pro": {
-      "usd": 2160,
-      "lista": "MacBook Pro M5 14in 16GB/1TB",
-      "opciones": 13,
-      "fecha": "2026-10-02"
+      "usd": 2120,
+      "lista": "MacBook Pro M5 14 16/1TB",
+      "opciones": 14,
+      "fecha": "2026-10-13"
     },
     "macbook-air": {
-      "usd": 1490,
-      "lista": "MacBook Air M5 13in 16GB/512GB 10CPU/10GPU",
-      "opciones": 8,
-      "fecha": "2026-10-02"
+      "usd": 1375,
+      "lista": "MacBook Air M5 13 16/512",
+      "opciones": 6,
+      "fecha": "2026-10-13"
     },
     "macbook-neo": {
-      "usd": 795,
-      "lista": "MacBook Neo 13in 8GB/256GB",
-      "opciones": 4,
-      "fecha": "2026-10-02"
+      "usd": 790,
+      "lista": "MacBook Neo 13 A18 8/256",
+      "opciones": 2,
+      "fecha": "2026-10-13"
     },
     "mac-mini": {
       "usd": 905,
-      "lista": "Mac Mini M4 16GB/256GB",
-      "opciones": 3,
-      "fecha": "2026-10-02"
+      "lista": "Mac mini M4 16/256",
+      "opciones": 6,
+      "fecha": "2026-10-13"
     },
     "ipad-pro": {
-      "usd": 1140,
-      "lista": "iPad Pro M4 13in 256GB",
-      "opciones": 15,
-      "fecha": "2026-10-02"
+      "usd": 1175,
+      "lista": "iPad Pro M5 11 Wifi 256",
+      "opciones": 8,
+      "fecha": "2026-10-13"
     },
     "ipad-air": {
-      "usd": 750,
-      "lista": "iPad Air M4 11in 128GB WiFi",
-      "opciones": 13,
-      "fecha": "2026-10-02"
+      "usd": 755,
+      "lista": "iPad Air M4 11 Wifi 128",
+      "opciones": 9,
+      "fecha": "2026-10-13"
     },
     "ipad": {
       "usd": 500,
-      "lista": "iPad A16 128GB",
-      "opciones": 5,
-      "fecha": "2026-10-02"
+      "lista": "iPad A16 11 Wifi 128",
+      "opciones": 3,
+      "fecha": "2026-10-13"
     },
     "ipad-mini": {
-      "usd": 725,
-      "lista": "iPad Mini 7 128GB",
+      "usd": 700,
+      "lista": "iPad Mini 7 8.3 Wifi 128",
       "opciones": 2,
-      "fecha": "2026-10-02"
+      "fecha": "2026-10-13"
     },
     "watch-ultra": {
-      "usd": 750,
-      "lista": "Apple Watch Ultra 3 49mm",
-      "opciones": 3,
-      "fecha": "2026-10-02"
+      "usd": 695,
+      "lista": "Apple Watch Ultra 2 49",
+      "opciones": 4,
+      "fecha": "2026-10-13"
     },
     "watch-series": {
-      "usd": 385,
-      "lista": "Apple Watch Series 11 42mm",
+      "usd": 410,
+      "lista": "Apple Watch Series 11 42",
       "opciones": 4,
-      "fecha": "2026-10-02"
+      "fecha": "2026-10-13"
     },
     "watch-se": {
-      "usd": 290,
-      "lista": "Apple Watch SE 3 40mm",
+      "usd": 305,
+      "lista": "Apple Watch SE 3 44",
       "opciones": 3,
-      "fecha": "2026-10-02"
+      "fecha": "2026-10-13"
     },
     "airtag": {
       "usd": 45,
-      "lista": "AirTag x1 2da Gen",
+      "lista": "AirTag Gen 2 x1",
       "opciones": 2,
-      "fecha": "2026-10-02"
+      "fecha": "2026-10-13"
     },
     "apple-pencil": {
-      "usd": 105,
+      "usd": 110,
       "lista": "Apple Pencil USB-C",
-      "opciones": 2,
-      "fecha": "2026-10-02"
+      "opciones": 3,
+      "fecha": "2026-10-13"
     },
     "airpods-max": {
-      "usd": 555,
-      "lista": "AirPods Max 2 USB-C",
-      "opciones": 1,
-      "fecha": "2026-10-02"
+      "usd": 505,
+      "lista": "AirPods Max USB-C",
+      "opciones": 2,
+      "fecha": "2026-10-13"
     },
     "airpods": {
       "usd": 150,
       "lista": "AirPods 4",
-      "opciones": 6,
-      "fecha": "2026-10-02"
+      "opciones": 5,
+      "fecha": "2026-10-13"
     },
     "airpods-pro": {
-      "usd": 260,
-      "lista": "AirPods Pro 3 USB-C",
+      "usd": 255,
+      "lista": "AirPods Pro 3",
       "opciones": 1,
-      "fecha": "2026-10-02"
+      "fecha": "2026-10-13"
+    },
+    "cargador-usbc": {
+      "usd": 30,
+      "lista": "Cargador Apple 20W",
+      "opciones": 1,
+      "fecha": "2026-10-13"
     }
   }
 }
