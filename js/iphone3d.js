@@ -261,7 +261,7 @@ async function init(mount) {
     const clock = new THREE.Clock();
     const TAU = Math.PI * 2;
     const easeInOut = p => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
-    const spin = { active: false, start: 0, dur: 1.9 };
+    const spin = { active: false, start: 0, dur: 1.9, done: false }; // done: el giro solo ocurre una vez por visita
     const drag = { on: false, lastX: 0, lastY: 0, vx: 0, vy: 0, lastMove: 0, touch: false };
     const qDrag = new THREE.Quaternion();              // giro del usuario (ejes de pantalla)
     const qTmp = new THREE.Quaternion(), qBase = new THREE.Quaternion(), eBase = new THREE.Euler();
@@ -272,8 +272,9 @@ async function init(mount) {
     }
 
     function startSpin() {
-        if (spin.active || drag.on || reduceMotion) return;
+        if (spin.done || spin.active || drag.on || reduceMotion) return;
         spin.active = true;
+        spin.done = true;
         spin.start = clock.getElapsedTime();
     }
 
