@@ -891,6 +891,19 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
     margin: 0 auto 64px;
 }
 .section-header-light { /* inherits, used on dark bg */ }
+.section-header-tight { margin-bottom: 40px; }
+
+/* Subtítulo dentro de una sección (ej. "Línea iPhone 17" debajo del destacado) */
+.subsection-header { text-align: center; margin: 72px auto 32px; }
+.subsection-title {
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+}
+.subsection-sub { font-size: 16px; color: var(--gray-500); }
+@media (max-width: 860px) { .subsection-header { margin: 56px auto 24px; } }
 
 .eyebrow {
     display: inline-block;
@@ -956,6 +969,62 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
 .card-glass:hover { background: rgba(255,255,255,0.09); }
 
 .card-featured { background: var(--white); }
+
+/* Tarjeta destacada ancha (lanzamiento) */
+.card-hero {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #000;
+}
+.card-hero:hover { transform: translateY(-4px); }
+.card-hero-body { position: relative; padding: 56px 48px 56px 56px; }
+.card-hero .card-badge { position: static; display: inline-block; margin-bottom: 18px; }
+.card-hero-title {
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 16px;
+}
+.card-hero-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 22px;
+    max-width: 420px;
+}
+.card-hero-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 26px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+}
+.card-hero-colors li { display: flex; align-items: center; gap: 7px; }
+.card-hero-colors span {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+}
+.card-hero-img { overflow: hidden; }
+.card-hero-img img {
+    display: block;
+    width: 100%; height: auto;
+    transition: transform 0.6s var(--ease);
+}
+.card-hero:hover .card-hero-img img { transform: scale(1.03); }
+@media (max-width: 860px) {
+    .card-hero { grid-template-columns: 1fr; }
+    .card-hero-img { order: -1; }
+    .card-hero-body { padding: 8px 28px 36px; }
+}
 
 /* Card image area */
 .card-img {
@@ -1146,28 +1215,33 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
     pointer-events: none;
 }
 
-/* Dots */
+/* Dots: sobre una pastilla oscura semitransparente para que se vean en fotos claras u oscuras */
 .slider-dots {
     position: absolute;
-    bottom: 10px;
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 5px;
+    gap: 6px;
+    padding: 6px 9px;
+    border-radius: 980px;
+    background: rgba(29,29,31,0.42);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     z-index: 10;
 }
 .slider-dot {
-    width: 5px; height: 5px;
+    width: 6px; height: 6px;
     border-radius: 3px;
     border: none;
-    background: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.6);
     cursor: pointer;
     padding: 0;
     transition: all 0.25s var(--ease);
 }
 .slider-dot.active {
-    width: 16px;
-    background: rgba(255,255,255,0.9);
+    width: 18px;
+    background: var(--white);
 }
 
 /* Arrows */
@@ -1196,9 +1270,7 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
 .slider-arrow.prev { left: 8px; }
 .slider-arrow.next { right: 8px; }
 
-/* Light-bg sliders: dark dots/arrows */
-[data-slider].slider-light .slider-dot { background: rgba(0,0,0,0.2); }
-[data-slider].slider-light .slider-dot.active { background: rgba(0,0,0,0.7); }
+/* Light-bg sliders: dark arrows */
 [data-slider].slider-light .slider-arrow {
     background: rgba(0,0,0,0.48);
     color: var(--white);

@@ -9,6 +9,7 @@
     "Productos de la lista que no caen en ninguna familia se ignoran. Nunca se crean ni se borran cards."
   ],
   "productos": [
+    { "id": "iphone-18-pro",  "web": "iPhone 18 Pro (destacado)", "empieza": ["iPhone 18 Pro"] },
     { "id": "iphone-17-pro",  "web": "iPhone 17 Pro",       "empieza": ["iPhone 17 Pro"], "excluye": ["Max"] },
     { "id": "iphone-air",     "web": "iPhone Air",          "empieza": ["iPhone 17 Air", "iPhone Air"] },
     { "id": "iphone-17",      "web": "iPhone 17",           "empieza": ["iPhone 17"], "excluye": ["Pro", "Air", "Plus", "Max"] },
