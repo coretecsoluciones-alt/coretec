@@ -8,9 +8,9 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const COLORS = {
-    'deep-blue':     { body: 0x24324c, lens: 0x1a2436 },
-    'cosmic-orange': { body: 0xd9692c, lens: 0x8a3b14 },
-    'silver':        { body: 0xd6d8db, lens: 0x9a9da2 },
+    'deep-blue':     { body: 0x24324c, lens: 0x1a2436, name: 'Azul profundo' },
+    'cosmic-orange': { body: 0xd9692c, lens: 0x8a3b14, name: 'Naranja cósmico' },
+    'silver':        { body: 0xd6d8db, lens: 0x9a9da2, name: 'Plata' },
 };
 
 const W = 7.19, H = 15.0, D = 0.875, R = 1.12;   // cuerpo
@@ -265,6 +265,7 @@ async function init(mount) {
     const drag = { on: false, lastX: 0, lastY: 0, vx: 0, vy: 0, lastMove: 0, touch: false };
     const qDrag = new THREE.Quaternion();              // giro del usuario (ejes de pantalla)
     const qTmp = new THREE.Quaternion(), qBase = new THREE.Quaternion(), eBase = new THREE.Euler();
+    const flip = { target: 0, val: 0, until: 0 };     // media vuelta para mostrar la espalda al elegir color
     const AX_Y = new THREE.Vector3(0, 1, 0), AX_X = new THREE.Vector3(1, 0, 0), IDENT = new THREE.Quaternion();
     function turn(dx, dy) {
         qTmp.setFromAxisAngle(AX_Y, dx); qDrag.premultiply(qTmp);
@@ -290,6 +291,7 @@ async function init(mount) {
     // El canvas no recibe clics (se extiende sobre el texto); los eventos van a la sección
     const zone = mount.closest('.hero') || document.body;
     let hovering = false;
+    const onPicker = e => e.target.closest && e.target.closest('.color-picker');
     zone.addEventListener('pointermove', e => {
         if (drag.on) {
             const dx = (e.clientX - drag.lastX) * 0.012;
@@ -301,14 +303,14 @@ async function init(mount) {
             return;
         }
         if (e.pointerType !== 'mouse') return;
-        const now = overPhone(e);
+        const now = !onPicker(e) && overPhone(e);
         if (now && !hovering) startSpin();
         hovering = now;
         zone.style.cursor = now ? 'grab' : '';
     });
     zone.addEventListener('pointerleave', () => { hovering = false; zone.style.cursor = ''; });
     zone.addEventListener('pointerdown', e => {
-        if (!overPhone(e)) return;
+        if (onPicker(e) || !overPhone(e)) return;
         // Si estaba girando solo, continuar el giro a mano desde donde va
         if (spin.active) {
             const p = Math.min((clock.getElapsedTime() - spin.start) / spin.dur, 1);
@@ -340,7 +342,13 @@ async function init(mount) {
         cur.x += (target.x - cur.x) * 0.05;
         cur.y += (target.y - cur.y) * 0.05;
 
-        let extra = 0;
+        if (flip.target && t > flip.until) flip.target = 0;
+        flip.val += (flip.target - flip.val) * 0.07;
+        aluminum.color.lerp(tint.body, 0.08);
+        aluminumDark.color.lerp(tint.lens, 0.08);
+        backGlass.color.lerp(tint.back, 0.08);
+
+        let extra = flip.val;
         if (spin.active) {
             const p = (t - spin.start) / spin.dur;
             if (p >= 1) spin.active = false;
@@ -369,6 +377,34 @@ async function init(mount) {
         renderer.render(scene, camera);
         if (visible) raf = requestAnimationFrame(frame);
     }
+    /* ── Selector de color ── */
+    const tint = {
+        body: aluminum.color.clone(), lens: aluminumDark.color.clone(), back: backGlass.color.clone(),
+    };
+    const picker = document.getElementById('colorPicker');
+    if (picker) {
+        const label = picker.querySelector('.color-name');
+        const dots = picker.querySelectorAll('.color-dot');
+        const select = key => {
+            const c = COLORS[key];
+            if (!c) return;
+            tint.body.set(c.body);
+            tint.lens.set(c.lens);
+            tint.back.set(c.body).multiplyScalar(0.92);
+            label.textContent = c.name;
+            dots.forEach(d => d.setAttribute('aria-checked', d.dataset.color === key));
+        };
+        dots.forEach(d => d.addEventListener('click', () => {
+            select(d.dataset.color);
+            if (reduceMotion || drag.on) return;
+            // Girar para mostrar la espalda (donde más se ve el color) y volver al frente
+            flip.target = Math.PI;
+            flip.until = clock.getElapsedTime() + 2.2;
+        }));
+        select(colorKey);
+        picker.hidden = false;
+    }
+
     new IntersectionObserver(([e]) => {
         visible = e.isIntersecting;
         if (visible && !raf) raf = requestAnimationFrame(frame);
