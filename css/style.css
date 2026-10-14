@@ -1215,12 +1215,10 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
     pointer-events: none;
 }
 
-/* Dots: sobre una pastilla oscura semitransparente para que se vean en fotos claras u oscuras */
+/* Dots: pastilla semitransparente debajo de la foto (main.js la inserta después del slider) */
 .slider-dots {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
+    width: fit-content;
+    margin: 14px auto 0;
     display: flex;
     gap: 6px;
     padding: 6px 9px;
@@ -1228,8 +1226,23 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
     background: rgba(29,29,31,0.42);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+}
+/* Por si el navegador usa un main.js viejo que deja los puntos dentro de la foto */
+[data-slider] > .slider-dots {
+    position: absolute;
+    bottom: 12px; left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
     z-index: 10;
 }
+/* Tarjetas oscuras (Mac): pastilla clara para que se distinga del fondo */
+.card-dark .slider-dots,
+.card-glass .slider-dots { background: rgba(255,255,255,0.14); }
+.slider-dots + .card-body { padding-top: 16px; }
+.slider-dots + .card-body-dark { border-top: 0; padding-top: 17px; } /* sin raya debajo de la pastilla (Mac) */
+/* En grillas con deslizables, las tarjetas sin pastilla bajan el texto lo mismo
+   para que nombres y precios queden alineados */
+.product-grid:has(.slider-dots) .product-card:not(:has(.slider-dots)) .card-body { padding-top: 48px; }
 .slider-dot {
     width: 6px; height: 6px;
     border-radius: 3px;
@@ -1954,6 +1967,7 @@ html.intro .intro-logo { animation: introLogo 2.6s ease both; }
     .grid-3 { grid-template-columns: 1fr; }
     .grid-4 { grid-template-columns: 1fr 1fr; }
     .grid-4.grid-stack-sm { grid-template-columns: 1fr; } /* large cards (Mac): one per row */
+    .grid-stack-sm .product-card:not(:has(.slider-dots)) .card-body { padding-top: 24px; } /* una por fila: no hace falta alinear */
     .grid-3.grid-keep-3 { grid-template-columns: 1fr; }
 
     .ig-posts-grid { grid-template-columns: 1fr; }

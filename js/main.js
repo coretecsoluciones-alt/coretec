@@ -268,7 +268,7 @@
                 return dot;
             });
 
-            container.appendChild(dotsWrap);
+            container.after(dotsWrap);   // debajo de la foto, sobre el fondo de la tarjeta
             container.appendChild(prevBtn);
             container.appendChild(nextBtn);
 
