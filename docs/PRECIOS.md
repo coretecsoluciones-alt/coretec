@@ -6,7 +6,7 @@
 2. Doble clic en **`Actualizar precios.command`** (en la carpeta del proyecto).
 3. Revisá el reporte y respondé `s` para publicar.
 
-Netlify actualiza la web en ~1 minuto. No hay que tocar HTML/CSS/JS.
+GitHub Pages actualiza la web en ~1–2 minutos. No hay que tocar HTML/CSS/JS.
 
 Desde la terminal es lo mismo: `python3 scripts/actualizar_precios.py`
 (o `python3 scripts/actualizar_precios.py lista.txt` para leer de un archivo).

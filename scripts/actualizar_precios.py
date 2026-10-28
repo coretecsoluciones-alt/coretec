@@ -145,7 +145,7 @@ def publicar(hoy):
         print('\n✗ Se guardó el cambio pero falló el push a GitHub:\n' + r.stderr)
         print('  Revisá la conexión y corré `git push` (o volvé a ejecutar este script).')
         sys.exit(1)
-    print('\n✓ Publicado. Netlify actualiza la web en ~1 minuto.')
+    print('\n✓ Publicado. La web se actualiza en ~1–2 minutos.')
 
 
 def main():
